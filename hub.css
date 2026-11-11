@@ -38,7 +38,7 @@ textarea{resize:vertical;min-height:110px}
 .app{min-height:100vh}
 .side{position:relative}
 .bar{position:sticky;top:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--ground);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:600;letter-spacing:.02em}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:600;letter-spacing:.02em;white-space:nowrap}
 .brand-mark{width:22px;height:22px;color:var(--gold)}
 .bar-tools{display:flex;align-items:center;gap:8px}
 .lang select{background:transparent;border-color:var(--line);font-size:14px;padding:6px 8px}
@@ -183,12 +183,11 @@ dialog h2{font-size:20px}
 
   /* 게임: 표처럼 한 줄에 정보 */
   .maps{border-top:1px solid var(--line)}
-  .map{grid-template-columns:96px minmax(0,1fr) 220px auto;grid-template-areas:"thumb info top act";align-items:center;column-gap:22px;padding:20px 8px;border-radius:0}
+  .map{grid-template-columns:96px minmax(0,1fr) auto;grid-template-areas:"thumb info act" "thumb top act";align-items:center;column-gap:22px;row-gap:4px;padding:20px 8px;border-radius:0}
   .map:hover{background:linear-gradient(90deg,var(--ground-2),transparent 85%)}
   .map-thumb{width:96px;height:96px}
   .map-name{font-size:21px}
-  .map-top{grid-area:top;flex-direction:column;gap:2px;margin:0;align-items:flex-start}
-  .map-top b{max-width:200px;font-size:15px}
+  .map-top{align-self:start}
   .map-act{margin:0}
   .map-act .btn:first-child{flex:none;min-width:96px}
   .cont{padding:14px 20px;margin-bottom:20px}
@@ -211,6 +210,20 @@ dialog h2{font-size:20px}
   .rq-layout{display:grid;grid-template-columns:minmax(0,560px) 240px;gap:48px;align-items:start}
   .rq-side{margin:0;padding-top:4px;border-top:2px solid var(--ink);padding-top:14px}
   .form .btn{align-self:flex-start;min-width:140px}
+}
+
+/* 아주 넓은 PC: 이번 주 1위를 따로 한 칸 */
+@media (min-width:1240px){
+  .map{grid-template-columns:96px minmax(0,1fr) 210px auto;grid-template-areas:"thumb info top act";row-gap:0}
+  .map-top{grid-area:top;flex-direction:column;gap:2px;align-self:center;align-items:flex-start}
+  .map-top b{max-width:200px;font-size:15px}
+}
+@media (min-width:960px) and (max-width:1099px){
+  .main{padding:32px 28px 56px}
+  .app{grid-template-columns:300px 1fr}
+  .bar,.hero,.hero.body,.side-foot{padding-left:22px;padding-right:22px}
+  .rv-layout{grid-template-columns:minmax(0,1fr) 280px;gap:28px}
+  .boards{gap:24px}
 }
 
 @media (prefers-reduced-motion:reduce){
