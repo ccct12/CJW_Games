@@ -82,14 +82,14 @@
   function svgEl(tag, a) { var n = document.createElementNS(SVGNS, tag); Object.keys(a).forEach(function (k) { n.setAttribute(k, a[k]); }); return n; }
   function mapThumb(id) {
     var m = mapModel(id), s = svgEl("svg", { viewBox: "0 0 100 100", "class": "map-thumb", "aria-hidden": "true" });
-    s.appendChild(svgEl("rect", { width: 100, height: 100, fill: "hsl(" + ((m.h + 140) % 360) + ",18%,19%)" }));
-    s.appendChild(svgEl("rect", { x: m.P, y: m.P, width: 100 - 2 * m.P, height: 100 - 2 * m.P, fill: "none", stroke: "#a88a5c", "stroke-width": 9, "stroke-linejoin": "round", opacity: .9 }));
-    s.appendChild(svgEl("rect", { x: 26, y: 26, width: 48, height: 48, fill: "rgba(255,255,255,.04)" }));
+    s.appendChild(svgEl("rect", { width: 100, height: 100, fill: "hsl(" + (95 + (m.h % 50)) + ",62%,68%)" }));
+    s.appendChild(svgEl("rect", { x: m.P, y: m.P, width: 100 - 2 * m.P, height: 100 - 2 * m.P, fill: "none", stroke: "#ffd88f", "stroke-width": 10, "stroke-linejoin": "round" }));
+    s.appendChild(svgEl("rect", { x: 26, y: 26, width: 48, height: 48, fill: "rgba(255,255,255,.22)", rx: 4 }));
     m.towers.forEach(function (tw) {
-      s.appendChild(svgEl("rect", { x: tw.x - 3, y: tw.y - 3, width: 6, height: 6, rx: 1, fill: tw.k ? "#6ea0d8" : "hsl(" + m.h + ",62%,60%)" }));
+      s.appendChild(svgEl("rect", { x: tw.x - 3.5, y: tw.y - 3.5, width: 7, height: 7, rx: 2, fill: tw.k ? "#5b8cff" : "hsl(" + m.h + ",90%,64%)", stroke: "#1c1d2b", "stroke-width": 1.4 }));
     });
     var g = loopPoint(m, 0);
-    s.appendChild(svgEl("circle", { cx: g[0], cy: g[1], r: 4.5, fill: "#d0553f" }));
+    s.appendChild(svgEl("circle", { cx: g[0], cy: g[1], r: 5, fill: "#7b4dff", stroke: "#1c1d2b", "stroke-width": 1.4 }));
     return s;
   }
 
@@ -106,19 +106,19 @@
     var r2 = rng("ground"), specks = [];
     for (var q = 0; q < 46; q++) specks.push([Math.floor(r2() * 25) * 4, Math.floor(r2() * 25) * 4, r2() < .5]);
     function draw() {
-      ctx.fillStyle = "#26352d"; ctx.fillRect(0, 0, 100, 100);
-      specks.forEach(function (s) { ctx.fillStyle = s[2] ? "rgba(255,255,255,.025)" : "rgba(0,0,0,.08)"; ctx.fillRect(s[0], s[1], 4, 4); });
-      ctx.strokeStyle = "#a88a5c"; ctx.lineWidth = 9; ctx.lineJoin = "round"; ctx.globalAlpha = .85;
-      ctx.strokeRect(m.P, m.P, 100 - 2 * m.P, 100 - 2 * m.P); ctx.globalAlpha = 1;
-      ctx.fillStyle = "rgba(255,255,255,.035)"; ctx.fillRect(26, 26, 48, 48);
-      m.towers.forEach(function (tw) { ctx.fillStyle = tw.k ? "#6ea0d8" : "#e2b84a"; ctx.fillRect(tw.x - 2.6, tw.y - 2.6, 5.2, 5.2); });
-      shots.forEach(function (s) { ctx.strokeStyle = s.k ? "rgba(110,160,216," + s.a + ")" : "rgba(226,184,74," + s.a + ")"; ctx.lineWidth = .9; ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); ctx.stroke(); });
+      ctx.fillStyle = "#9fe07c"; ctx.fillRect(0, 0, 100, 100);
+      specks.forEach(function (s) { ctx.fillStyle = s[2] ? "rgba(255,255,255,.28)" : "rgba(60,140,60,.18)"; ctx.fillRect(s[0], s[1], 4, 4); });
+      ctx.strokeStyle = "#ffd88f"; ctx.lineWidth = 10; ctx.lineJoin = "round";
+      ctx.strokeRect(m.P, m.P, 100 - 2 * m.P, 100 - 2 * m.P);
+      ctx.fillStyle = "rgba(255,255,255,.25)"; ctx.fillRect(26, 26, 48, 48);
+      m.towers.forEach(function (tw) { ctx.fillStyle = tw.k ? "#5b8cff" : "#ff5c8a"; ctx.strokeStyle = "#1c1d2b"; ctx.lineWidth = .9; ctx.fillRect(tw.x - 3, tw.y - 3, 6, 6); ctx.strokeRect(tw.x - 3, tw.y - 3, 6, 6); });
+      shots.forEach(function (s) { ctx.strokeStyle = s.k ? "rgba(91,140,255," + s.a + ")" : "rgba(255,92,138," + s.a + ")"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); ctx.stroke(); });
       creeps.forEach(function (c) {
         if (c.t < 0) return;
-        var p = loopPoint(m, c.t); ctx.fillStyle = c.hit > 0 ? "#ece4d0" : "#d0553f";
-        ctx.beginPath(); ctx.arc(p[0], p[1], 2.3, 0, 6.283); ctx.fill();
+        var p = loopPoint(m, c.t); ctx.fillStyle = c.hit > 0 ? "#ffffff" : "#7b4dff"; ctx.strokeStyle = "#1c1d2b"; ctx.lineWidth = .7;
+        ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, 6.283); ctx.fill(); ctx.stroke();
       });
-      bursts.forEach(function (b) { ctx.strokeStyle = "rgba(236,228,208," + b.a + ")"; ctx.lineWidth = .7; ctx.beginPath(); ctx.arc(b.x, b.y, 2 + (1 - b.a) * 5, 0, 6.283); ctx.stroke(); });
+      bursts.forEach(function (b) { ctx.strokeStyle = "rgba(255,210,63," + b.a + ")"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(b.x, b.y, 2 + (1 - b.a) * 5, 0, 6.283); ctx.stroke(); });
     }
     function step(dt) {
       creeps.forEach(function (c) { c.t += dt * 0.05; if (c.hit > 0) c.hit -= dt; });
@@ -346,7 +346,7 @@
   $("#rv-open").addEventListener("click", function () {
     var w = $("#rv-write"), open = !w.classList.contains("open");
     w.classList.toggle("open", open);
-    if (open) { var f = w.querySelector("textarea,button"); if (f) f.focus(); }
+    if (open) { w.scrollIntoView({ block: "start", behavior: RM ? "auto" : "smooth" }); var f = w.querySelector("textarea,button"); if (f) f.focus({ preventScroll: true }); }
   });
 
   function renderWrite() {
