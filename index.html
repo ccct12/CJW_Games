@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#11141a">
+<title>CJW GAMES — 모바일 유즈맵 게임 모음</title>
+<meta name="description" content="워크래프트3 유즈맵을 모바일에서 바로 즐기는 무료 웹 게임 모음. 랭킹, 방문 후기, 게임 요청.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="hub.css?v=2">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="./"><span class="logo-mark">CJW</span><span class="logo-txt">GAMES</span></a>
+  <div class="top-r">
+    <select id="lang" aria-label="Language">
+      <option value="ko">한국어</option>
+      <option value="en">English</option>
+      <option value="ja">日本語</option>
+      <option value="zh-Hans">简体中文</option>
+      <option value="zh-Hant">繁體中文</option>
+    </select>
+    <button id="me" class="chip" type="button"></button>
+  </div>
+</header>
+
+<div id="back" class="back" hidden><a id="back-a" href="#"></a></div>
+<div id="notice" class="notice" hidden></div>
+
+<nav class="tabs" role="tablist">
+  <a href="#games" data-tab="games" data-t="tabGames"></a>
+  <a href="#rank" data-tab="rank" data-t="tabRank"></a>
+  <a href="#reviews" data-tab="reviews" data-t="tabReviews"></a>
+  <a href="#request" data-tab="request" data-t="tabRequest"></a>
+</nav>
+
+<main>
+  <section id="v-games" class="view">
+    <p class="lead" data-t="lead"></p>
+    <div id="game-list" class="grid"></div>
+  </section>
+
+  <section id="v-rank" class="view" hidden>
+    <div id="rank-games" class="chips"></div>
+    <div class="seg">
+      <button type="button" data-period="week" data-t="weekly"></button>
+      <button type="button" data-period="all" data-t="allTime"></button>
+    </div>
+    <ol id="rank-list" class="rank"></ol>
+    <p class="hint" data-t="rankHint"></p>
+  </section>
+
+  <section id="v-reviews" class="view" hidden>
+    <div id="rv-write" class="card"></div>
+    <div class="row">
+      <select id="rv-filter" aria-label="filter"></select>
+    </div>
+    <ul id="rv-list" class="reviews"></ul>
+    <button id="rv-more" class="btn ghost wide" type="button" hidden data-t="more"></button>
+  </section>
+
+  <section id="v-request" class="view" hidden>
+    <form id="rq-form" class="card" autocomplete="off">
+      <label><span data-t="reqKind"></span>
+        <select name="kind">
+          <option value="게임 요청" data-t="kindGame"></option>
+          <option value="버그" data-t="kindBug"></option>
+          <option value="기타" data-t="kindEtc"></option>
+        </select>
+      </label>
+      <label><span data-t="reqGame"></span><input name="game" maxlength="40"></label>
+      <label><span data-t="reqMsg"></span><textarea name="msg" rows="5" maxlength="500" required></textarea></label>
+      <input name="hp" class="hp" tabindex="-1" aria-hidden="true">
+      <button class="btn wide" type="submit" data-t="send"></button>
+      <p class="hint" data-t="reqHint"></p>
+    </form>
+  </section>
+</main>
+
+<footer class="foot"><p data-t="footer"></p></footer>
+
+<dialog id="dlg-login">
+  <form id="login-form" method="dialog" autocomplete="off">
+    <h2 data-t="login"></h2>
+    <label><span data-t="nick"></span><input name="nick" minlength="2" maxlength="12" required autocomplete="username"></label>
+    <label><span data-t="pin"></span><input name="pin" inputmode="numeric" pattern="\d{6}" maxlength="6" required autocomplete="current-password" type="password"></label>
+    <p class="hint" data-t="loginNote"></p>
+    <p id="login-err" class="err" hidden></p>
+    <div class="row end">
+      <button class="btn ghost" type="button" value="cancel" data-t="cancel"></button>
+      <button class="btn" type="submit" value="ok" data-t="login"></button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="sdk.js?v=2"></script>
+<script src="hub.js?v=2"></script>
+</body>
+</html>
