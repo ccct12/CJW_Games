@@ -49,7 +49,7 @@
   function stars(n) { var s = ""; for (var i = 1; i <= 5; i++) s += i <= Math.round(n) ? "★" : "☆"; return s; }
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
-  // ───────── 맵 그림 (게임마다 다른 미니맵, 직접 생성) ─────────
+  // ───────── 게임 표지 (장르와 상관없이 쓰는 범용 그림) ─────────
   function rng(str) {
     var h = 1779033703 ^ str.length;
     for (var i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
@@ -58,83 +58,98 @@
       return ((h ^= h >>> 16) >>> 0) / 4294967296;
     };
   }
-  function hue(id) { var h = 0; for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 360; return h; }
-  /** 100×100 좌표: 바깥 흙길 고리 + 가운데 타워 자리 */
-  function mapModel(id) {
-    var r = rng(id), towers = [], P = 17;
-    var n = 7 + Math.floor(r() * 5);
-    for (var i = 0; i < n; i++) {
-      var x = 30 + Math.floor(r() * 9) * 5, y = 30 + Math.floor(r() * 9) * 5, dup = false;
-      for (var j = 0; j < towers.length; j++) if (towers[j].x === x && towers[j].y === y) dup = true;
-      if (!dup) towers.push({ x: x, y: y, k: r() < .3 ? 1 : 0, cd: r() * 1.2 });
-    }
-    return { P: P, towers: towers, h: hue(id), gate: Math.floor(r() * 4) };
+  var PALETTE = ["#ff5c8a", "#ffd23f", "#5b8cff", "#32c9a0", "#7b4dff", "#ff8a3d", "#2ec5e6"];
+  var INK = "#1c1d2b";
+  function pickColors(id, idx) {   // 목록 순서대로 색을 돌림 → 7개까지는 서로 다른 색
+    var r = rng(id + "#"), a = ((idx || 0) * 3) % PALETTE.length, b = (a + 2 + Math.floor(r() * (PALETTE.length - 3))) % PALETTE.length;
+    return [PALETTE[a], PALETTE[b], r];
   }
-  function loopPoint(m, t) {          // t: 0~1, 고리 길을 따라 한 바퀴
-    var a = m.P, b = 100 - m.P, L = b - a, d = ((t % 1) + 1) % 1 * L * 4, side = Math.floor(d / L), o = d - side * L;
-    side = (side + m.gate) % 4;
-    if (side === 0) return [a + o, a];
-    if (side === 1) return [b, a + o];
-    if (side === 2) return [b - o, b];
-    return [a, b - o];
-  }
+  // 장르 아이콘 (24×24, 선 그림)
+  var GLYPH = {
+    defense: "M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z",
+    arena: "M5 4l9 9M4 9l5 5M14 13l-2 2M19 4l-9 9M20 9l-5 5M10 13l2 2M4 20l3-3M20 20l-3-3",
+    rpg: "M14 4l6 0 0 6-9 9-3-3 9-9M6 15l3 3M4 20l2-2",
+    action: "M13 3L5 13h6l-1 8 8-10h-6z",
+    puzzle: "M5 9h3a2 2 0 1 1 4 0h3v3a2 2 0 1 1 0 4v3H5v-3a2 2 0 1 0 0-4z",
+    strategy: "M6 20h12M8 20v-3h8v3M9 17l-1-7h8l-1 7M8 10V6h2v2h1V6h2v2h1V6h2v4",
+    casual: "M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8z",
+    other: "M6 9h12a3 3 0 0 1 3 3v2a3 3 0 0 1-5 2l-1-1H9l-1 1a3 3 0 0 1-5-2v-2a3 3 0 0 1 3-3zM8 11v3M6.5 12.5h3M15 12h.01M17 13.5h.01"
+  };
   var SVGNS = "http://www.w3.org/2000/svg";
   function svgEl(tag, a) { var n = document.createElementNS(SVGNS, tag); Object.keys(a).forEach(function (k) { n.setAttribute(k, a[k]); }); return n; }
-  function mapThumb(id) {
-    var m = mapModel(id), s = svgEl("svg", { viewBox: "0 0 100 100", "class": "map-thumb", "aria-hidden": "true" });
-    s.appendChild(svgEl("rect", { width: 100, height: 100, fill: "hsl(" + (95 + (m.h % 50)) + ",62%,68%)" }));
-    s.appendChild(svgEl("rect", { x: m.P, y: m.P, width: 100 - 2 * m.P, height: 100 - 2 * m.P, fill: "none", stroke: "#ffd88f", "stroke-width": 10, "stroke-linejoin": "round" }));
-    s.appendChild(svgEl("rect", { x: 26, y: 26, width: 48, height: 48, fill: "rgba(255,255,255,.22)", rx: 4 }));
-    m.towers.forEach(function (tw) {
-      s.appendChild(svgEl("rect", { x: tw.x - 3.5, y: tw.y - 3.5, width: 7, height: 7, rx: 2, fill: tw.k ? "#5b8cff" : "hsl(" + m.h + ",90%,64%)", stroke: "#1c1d2b", "stroke-width": 1.4 }));
-    });
-    var g = loopPoint(m, 0);
-    s.appendChild(svgEl("circle", { cx: g[0], cy: g[1], r: 5, fill: "#7b4dff", stroke: "#1c1d2b", "stroke-width": 1.4 }));
+  function coverThumb(g, idx) {
+    var c = pickColors(g.id, idx), r = c[2], s = svgEl("svg", { viewBox: "0 0 100 100", "class": "map-thumb", "aria-hidden": "true" });
+    s.appendChild(svgEl("rect", { width: 100, height: 100, fill: c[0] }));
+    // 뒤쪽에 큰 도형 두 개 (게임마다 위치·모양이 다름)
+    for (var i = 0; i < 2; i++) {
+      var x = 20 + r() * 60, y = 20 + r() * 60, z = 26 + r() * 22, k = Math.floor(r() * 3);
+      var sh = k === 0 ? svgEl("circle", { cx: x, cy: y, r: z / 2 })
+        : k === 1 ? svgEl("rect", { x: x - z / 2, y: y - z / 2, width: z, height: z, rx: 6, transform: "rotate(" + Math.floor(r() * 40 - 20) + " " + x + " " + y + ")" })
+        : svgEl("path", { d: "M" + x + " " + (y - z / 2) + "L" + (x + z / 2) + " " + (y + z / 2) + "L" + (x - z / 2) + " " + (y + z / 2) + "Z" });
+      sh.setAttribute("fill", i ? c[1] : "rgba(255,255,255,.35)"); sh.setAttribute("stroke", INK); sh.setAttribute("stroke-width", i ? 2.5 : 0);
+      s.appendChild(sh);
+    }
+    // 가운데 흰 원 + 장르 아이콘
+    s.appendChild(svgEl("circle", { cx: 50, cy: 50, r: 21, fill: "#fff", stroke: INK, "stroke-width": 2.5 }));
+    var gl = svgEl("path", { d: GLYPH[g.genre] || GLYPH.other, fill: "none", stroke: INK, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round", transform: "translate(35 35) scale(1.25)" });
+    s.appendChild(gl);
     return s;
   }
 
-  // 히어로: 고리 길을 도는 몬스터와 타워 (유일한 자동 움직임)
+  // 히어로: 장난감처럼 떠다니는 도형 — 누르면 톡 터짐 (사이트의 유일한 자동 움직임)
   function startField() {
     var cv = $("#field"); if (!cv || !cv.getContext) return;
-    var ctx = cv.getContext("2d"), m = mapModel("cjw-games"), creeps = [], shots = [], bursts = [], running = false, last = 0, acc = 0;
-    for (var i = 0; i < 18; i++) creeps.push({ t: -i * 0.05, hp: 7 });
-    function size() {
-      var w = cv.clientWidth || 128, d = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.round(w * d); cv.height = Math.round(w * d);
-      ctx.setTransform(cv.width / 100, 0, 0, cv.height / 100, 0, 0);
+    var ctx = cv.getContext("2d"), r = rng("cjw-games"), toys = [], pops = [], running = false, last = 0, acc = 0, W = 100;
+    function addToy(x, y) {
+      var z = 9 + r() * 9;
+      toys.push({ x: x != null ? x : 12 + r() * 76, y: y != null ? y : 12 + r() * 76, z: z, vx: (r() - .5) * 14, vy: (r() - .5) * 14,
+        a: r() * 6.28, va: (r() - .5) * 1.2, k: Math.floor(r() * 4), c: PALETTE[Math.floor(r() * PALETTE.length)], s: x != null ? 0 : 1 });
     }
-    var r2 = rng("ground"), specks = [];
-    for (var q = 0; q < 46; q++) specks.push([Math.floor(r2() * 25) * 4, Math.floor(r2() * 25) * 4, r2() < .5]);
+    for (var i = 0; i < 11; i++) addToy();
+    function size() {
+      var w = cv.clientWidth || 118, d = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.round(w * d); cv.height = Math.round(w * d);
+      ctx.setTransform(cv.width / W, 0, 0, cv.height / W, 0, 0);
+    }
+    function shape(t) {
+      var h = t.z / 2 * t.s;
+      ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(t.a);
+      ctx.beginPath();
+      if (t.k === 0) ctx.arc(0, 0, h, 0, 6.283);
+      else if (t.k === 1) { var q = h * .9; ctx.moveTo(-q + 2, -q); ctx.arcTo(q, -q, q, q, 2.5); ctx.arcTo(q, q, -q, q, 2.5); ctx.arcTo(-q, q, -q, -q, 2.5); ctx.arcTo(-q, -q, q, -q, 2.5); }
+      else if (t.k === 2) { ctx.moveTo(0, -h); ctx.lineTo(h * .95, h * .75); ctx.lineTo(-h * .95, h * .75); ctx.closePath(); }
+      else { for (var j = 0; j < 10; j++) { var rr = j % 2 ? h * .45 : h, an = j * .628 - 1.571; ctx.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); } ctx.closePath(); }
+      ctx.fillStyle = t.c; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke();
+      ctx.restore();
+    }
     function draw() {
-      ctx.fillStyle = "#9fe07c"; ctx.fillRect(0, 0, 100, 100);
-      specks.forEach(function (s) { ctx.fillStyle = s[2] ? "rgba(255,255,255,.28)" : "rgba(60,140,60,.18)"; ctx.fillRect(s[0], s[1], 4, 4); });
-      ctx.strokeStyle = "#ffd88f"; ctx.lineWidth = 10; ctx.lineJoin = "round";
-      ctx.strokeRect(m.P, m.P, 100 - 2 * m.P, 100 - 2 * m.P);
-      ctx.fillStyle = "rgba(255,255,255,.25)"; ctx.fillRect(26, 26, 48, 48);
-      m.towers.forEach(function (tw) { ctx.fillStyle = tw.k ? "#5b8cff" : "#ff5c8a"; ctx.strokeStyle = "#1c1d2b"; ctx.lineWidth = .9; ctx.fillRect(tw.x - 3, tw.y - 3, 6, 6); ctx.strokeRect(tw.x - 3, tw.y - 3, 6, 6); });
-      shots.forEach(function (s) { ctx.strokeStyle = s.k ? "rgba(91,140,255," + s.a + ")" : "rgba(255,92,138," + s.a + ")"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); ctx.stroke(); });
-      creeps.forEach(function (c) {
-        if (c.t < 0) return;
-        var p = loopPoint(m, c.t); ctx.fillStyle = c.hit > 0 ? "#ffffff" : "#7b4dff"; ctx.strokeStyle = "#1c1d2b"; ctx.lineWidth = .7;
-        ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, 6.283); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, W);
+      ctx.fillStyle = "#eef1fa";
+      for (var gx = 5; gx < W; gx += 10) for (var gy = 5; gy < W; gy += 10) ctx.fillRect(gx - .5, gy - .5, 1, 1);
+      toys.forEach(shape);
+      pops.forEach(function (p) {
+        ctx.strokeStyle = p.c; ctx.lineWidth = 1.5; ctx.globalAlpha = p.a;
+        for (var j = 0; j < 8; j++) { var an = j * .785, d1 = 4 + (1 - p.a) * 8, d2 = d1 + 4; ctx.beginPath(); ctx.moveTo(p.x + Math.cos(an) * d1, p.y + Math.sin(an) * d1); ctx.lineTo(p.x + Math.cos(an) * d2, p.y + Math.sin(an) * d2); ctx.stroke(); }
+        ctx.globalAlpha = 1;
       });
-      bursts.forEach(function (b) { ctx.strokeStyle = "rgba(255,210,63," + b.a + ")"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(b.x, b.y, 2 + (1 - b.a) * 5, 0, 6.283); ctx.stroke(); });
     }
     function step(dt) {
-      creeps.forEach(function (c) { c.t += dt * 0.05; if (c.hit > 0) c.hit -= dt; });
-      m.towers.forEach(function (tw) {
-        tw.cd -= dt; if (tw.cd > 0) return;
-        var best = null, bd = 30 * 30;
-        creeps.forEach(function (c) { if (c.t < 0) return; var p = loopPoint(m, c.t), dx = p[0] - tw.x, dy = p[1] - tw.y, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = c; } });
-        tw.cd = tw.k ? 1.6 : 0.9;
-        if (!best) return;
-        var p = loopPoint(m, best.t);
-        shots.push({ x1: tw.x, y1: tw.y, x2: p[0], y2: p[1], a: 1, k: tw.k });
-        best.hit = .08; best.hp -= tw.k ? 2 : 1;
-        if (best.hp <= 0) { bursts.push({ x: p[0], y: p[1], a: 1 }); best.t = -0.1 - Math.random() * .25; best.hp = 7; }
+      toys.forEach(function (t) {
+        if (t.s < 1) t.s = Math.min(1, t.s + dt * 4);
+        var sp = Math.sqrt(t.vx * t.vx + t.vy * t.vy);    // 너무 빠르면 천천히, 멈추면 다시 떠다니게
+        if (sp > 9) { t.vx *= 1 - dt * 1.5; t.vy *= 1 - dt * 1.5; }
+        if (sp < 3) { t.vx += (r() - .5) * 6 * dt * 10; t.vy += (r() - .5) * 6 * dt * 10; }
+        t.x += t.vx * dt; t.y += t.vy * dt; t.a += t.va * dt;
+        var h = t.z / 2;
+        if (t.x < h) { t.x = h; t.vx = Math.abs(t.vx); } if (t.x > W - h) { t.x = W - h; t.vx = -Math.abs(t.vx); }
+        if (t.y < h) { t.y = h; t.vy = Math.abs(t.vy); }
+        if (t.y > W - h) { t.y = W - h; t.vy = -Math.abs(t.vy); }
       });
-      shots.forEach(function (s) { s.a -= dt * 7; }); shots = shots.filter(function (s) { return s.a > 0; });
-      bursts.forEach(function (b) { b.a -= dt * 2.5; }); bursts = bursts.filter(function (b) { return b.a > 0; });
+      for (var i = 0; i < toys.length; i++) for (var j = i + 1; j < toys.length; j++) {   // 서로 살짝 밀어내기
+        var A = toys[i], B = toys[j], dx = B.x - A.x, dy = B.y - A.y, d = Math.sqrt(dx * dx + dy * dy) || 1, min = (A.z + B.z) / 2 + 2;
+        if (d < min) { var p = (min - d) / 2, nx = dx / d, ny = dy / d; A.x -= nx * p; A.y -= ny * p; B.x += nx * p; B.y += ny * p; A.vx -= nx * 2; A.vy -= ny * 2; B.vx += nx * 2; B.vy += ny * 2; }
+      }
+      pops.forEach(function (p) { p.a -= dt * 2.6; }); pops = pops.filter(function (p) { return p.a > 0; });
     }
     function frame(ts) {
       if (!running) return;
@@ -147,8 +162,17 @@
       if (on && !running) { running = true; last = 0; requestAnimationFrame(frame); }
       if (!on) running = false;
     }
+    cv.addEventListener("pointerdown", function (e) {
+      var b = cv.getBoundingClientRect(), x = (e.clientX - b.left) / b.width * W, y = (e.clientY - b.top) / b.height * W, hit = -1;
+      toys.forEach(function (t, i) { var dx = t.x - x, dy = t.y - y; if (dx * dx + dy * dy < Math.pow(t.z / 2 + 4, 2)) hit = i; });
+      if (hit >= 0) {
+        var t = toys[hit]; pops.push({ x: t.x, y: t.y, a: 1, c: t.c }); toys.splice(hit, 1);
+        setTimeout(function () { addToy(15 + r() * 70, 15 + r() * 70); }, 600);
+      } else { toys.forEach(function (t) { var dx = t.x - x, dy = t.y - y, d = Math.sqrt(dx * dx + dy * dy) || 1; if (d < 35) { t.vx += dx / d * 26; t.vy += dy / d * 26; } }); }
+      if (RM) draw();
+    });
     size();
-    for (var k = 0; k < 160; k++) step(1 / 15);   // 첫 화면부터 몬스터가 길 위에 있게
+    for (var k = 0; k < 30; k++) step(1 / 15);
     draw();
     window.addEventListener("resize", function () { size(); draw(); });
     var visible = true;
@@ -158,7 +182,7 @@
   }
 
   // ───────── 상태 ─────────
-  var games = [], rating = {}, tops = {}, rankGame = "", rankPeriod = "week", rvGame = "", rvPage = 0, rvTotal = null;
+  var games = [], rating = {}, tops = {}, genre = "", rankGame = "", rankPeriod = "week", rvGame = "", rvPage = 0, rvTotal = null;
 
   function gname(g) { return g.name[lang] || g.name.ko || g.id; }
   function gameName(id) {
@@ -172,7 +196,7 @@
     document.documentElement.lang = lang;
     $("#lang").value = lang;
     $$("[data-t]").forEach(function (n) { n.textContent = t(n.getAttribute("data-t")); });
-    renderMe(); renderBack(); renderGames(); renderCont(); renderRankGames(); renderBoards(); renderRvFilter(); renderWrite(); renderCounts();
+    renderMe(); renderBack(); renderGenres(); renderGames(); renderCont(); renderRankGames(); renderBoards(); renderRvFilter(); renderWrite(); renderCounts();
     if (latestItem) renderLatest();
   }
   $("#lang").addEventListener("change", function (e) { lang = e.target.value; H.setLang(lang); applyLang(); loadReviewsIfOpen(true); });
@@ -236,18 +260,34 @@
   }
 
   // ───────── 게임 목록 ─────────
+  function tagName(kind, code) { var m = (T[lang][kind] || T.ko[kind] || {}); return m[code] || (T.ko[kind] || {})[code] || code; }
+  function renderGenres() {
+    var box = $("#genres"); clear(box);
+    var seen = {}, list = [];
+    games.forEach(function (g) { if (g.genre && !seen[g.genre]) { seen[g.genre] = 1; list.push(g.genre); } });
+    box.hidden = list.length < 2;
+    if (list.length < 2) { genre = ""; return; }
+    [""].concat(list).forEach(function (code) {
+      box.appendChild(el("button", { type: "button", "aria-pressed": code === genre ? "true" : "false", text: code ? tagName("g", code) : t("genreAll"),
+        onclick: function () { genre = code; renderGenres(); renderGames(); } }));
+    });
+  }
   function renderGames() {
     var box = $("#game-list"); clear(box);
     if (!games.length) { box.appendChild(el("li", { cls: "map skel" })); box.appendChild(el("li", { cls: "map skel" })); return; }
-    games.forEach(function (g) {
+    games.filter(function (g) { return !genre || g.genre === genre; }).forEach(function (g) {
       var rt = rating[g.id], top = tops[g.id] && tops[g.id].week && tops[g.id].week[0];
       var url = /^https:\/\//.test(g.url) ? g.url : "#";
       var thumb;
       if (g.thumb && /^https:\/\//.test(g.thumb)) thumb = el("img", { cls: "map-thumb", src: g.thumb, alt: "", loading: "lazy" });
-      else thumb = mapThumb(g.id);
+      else thumb = coverThumb(g, games.indexOf(g));
       box.appendChild(el("li", { cls: "map" }, [
         thumb,
         el("div", { cls: "map-info" }, [
+          (g.genre || g.origin) ? el("div", { cls: "tags" }, [
+            g.origin ? el("span", { cls: "tag o", text: tagName("o", g.origin) }) : null,
+            g.genre ? el("span", { cls: "tag", text: tagName("g", g.genre) }) : null
+          ]) : null,
           el("h2", { cls: "map-name", text: gname(g) }),
           el("div", { cls: "map-meta" }, rt ? [
             el("span", { cls: "star", text: stars(rt.avg), "aria-label": rt.avg + "/5" }),
@@ -275,7 +315,7 @@
       if (!r.ok) { clear($("#game-list")); $("#game-list").appendChild(el("li", { cls: "empty", text: errMsg(r) })); return; }
       games = r.games || []; rating = r.rating || {};
       if (!rankGame && games[0]) rankGame = games[0].id;
-      renderGames(); renderCont(); renderRankGames(); renderRvFilter(); renderWrite(); renderCounts();
+      renderGenres(); renderGames(); renderCont(); renderRankGames(); renderRvFilter(); renderWrite(); renderCounts();
       games.forEach(function (g) {
         H.top(g.id, "normal").then(function (x) { if (x.ok) { tops[g.id] = x; renderGames(); if (g.id === rankGame) renderBoards(); } });
       });

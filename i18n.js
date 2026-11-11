@@ -164,3 +164,30 @@ window.CJW_T = (function () {
   // 기존 문구 다듬기
   T.ko.lead = ""; T.en.lead = ""; T.ja.lead = ""; T["zh-Hans"].lead = ""; T["zh-Hant"].lead = "";
 })(window.CJW_T);
+
+/* 범용 게임 허브 문구 (2026-11-11) — 장르·출처는 시트 게임목록의 코드값과 맞춤 */
+(function (T) {
+  var X = {
+    ko: { hero: "추억의 게임도\n새 게임도\n폰에서 바로 한 판.", heroSub: "설치 없이 브라우저에서 바로 시작해요. 워크래프트3 유즈맵부터 시작해서, 요청이 들어온 게임을 하나씩 만들어 가요. 닉네임 하나면 랭킹에 이름이 올라가요.",
+      reqLead: "다음에 만들 게임은 여기서 정해요. 해 보고 싶은 게임이나 기억나는 유즈맵 이름을 적어 주세요.", genreAll: "전체", tapHint: "도형을 눌러 보세요",
+      g: { defense: "디펜스", arena: "대전", rpg: "RPG", action: "액션", puzzle: "퍼즐", strategy: "전략", casual: "캐주얼", other: "기타" },
+      o: { wc3: "워크3 유즈맵", sc: "스타 유즈맵", original: "오리지널", other: "기타" } },
+    en: { hero: "Old favorites.\nNew games.\nOne tap on your phone.", heroSub: "Starts right in your browser, no install. We began with Warcraft III custom maps and keep building the games you ask for. Pick a nickname to get on the leaderboard.",
+      reqLead: "This is where the next game gets decided. Tell us a game you'd like to play, or a custom map you remember.", genreAll: "All", tapHint: "Tap a shape",
+      g: { defense: "Defense", arena: "Versus", rpg: "RPG", action: "Action", puzzle: "Puzzle", strategy: "Strategy", casual: "Casual", other: "Other" },
+      o: { wc3: "WC3 custom map", sc: "StarCraft map", original: "Original", other: "Other" } },
+    ja: { hero: "懐かしのゲームも\n新しいゲームも\nスマホですぐ遊べる。", heroSub: "インストール不要、ブラウザですぐ始められます。Warcraft III のカスタムマップから始めて、リクエストされたゲームをひとつずつ作っています。ニックネームひとつでランキングに載れます。",
+      reqLead: "次に作るゲームはここで決まります。遊びたいゲームや覚えているカスタムマップの名前を書いてください。", genreAll: "すべて", tapHint: "図形をタップしてみて",
+      g: { defense: "ディフェンス", arena: "対戦", rpg: "RPG", action: "アクション", puzzle: "パズル", strategy: "戦略", casual: "カジュアル", other: "その他" },
+      o: { wc3: "WC3 カスタムマップ", sc: "スタクラ マップ", original: "オリジナル", other: "その他" } },
+    "zh-Hans": { hero: "经典老游戏\n全新小游戏\n手机上马上开玩。", heroSub: "无需安装，浏览器里直接开始。我们从魔兽争霸3自定义地图做起，按大家的需求一款一款地做下去。一个昵称就能上排行榜。",
+      reqLead: "下一款游戏在这里决定。写下你想玩的游戏，或记得的自定义地图名称。", genreAll: "全部", tapHint: "点一下图形试试",
+      g: { defense: "塔防", arena: "对战", rpg: "RPG", action: "动作", puzzle: "益智", strategy: "策略", casual: "休闲", other: "其他" },
+      o: { wc3: "魔兽3地图", sc: "星际地图", original: "原创", other: "其他" } },
+    "zh-Hant": { hero: "經典老遊戲\n全新小遊戲\n手機上馬上開玩。", heroSub: "免安裝，瀏覽器裡直接開始。我們從魔獸爭霸3自訂地圖做起，依大家的需求一款一款地做下去。一個暱稱就能上排行榜。",
+      reqLead: "下一款遊戲在這裡決定。寫下你想玩的遊戲，或記得的自訂地圖名稱。", genreAll: "全部", tapHint: "點一下圖形試試",
+      g: { defense: "塔防", arena: "對戰", rpg: "RPG", action: "動作", puzzle: "益智", strategy: "策略", casual: "休閒", other: "其他" },
+      o: { wc3: "魔獸3地圖", sc: "星海地圖", original: "原創", other: "其他" } }
+  };
+  Object.keys(X).forEach(function (l) { Object.keys(X[l]).forEach(function (k) { T[l][k] = X[l][k]; }); });
+})(window.CJW_T);

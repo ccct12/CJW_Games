@@ -1,4 +1,4 @@
-/* CJW GAMES — 한낮의 디펜스 맵: 잔디 · 모래길 · 사탕색 타워, 굵은 테두리 스티커 버튼 */
+/* CJW GAMES — 여러 장르를 담는 밝은 게임 허브: 사탕색 도형, 굵은 테두리 스티커 버튼 */
 :root{
   --bg:#f4f6fc; --paper:#ffffff; --soft:#eef1fa; --soft-2:#e3e7f4;
   --ink:#1c1d2b; --ink-2:#565a70; --ink-3:#8a8ea3; --edge:#1c1d2b; --hair:#e1e4ef;
@@ -12,7 +12,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;background:var(--bg)}
-body{margin:0;color:var(--ink);font:400 15px/1.6 var(--sans);background:var(--bg)}
+body{margin:0;color:var(--ink);font:400 15px/1.6 var(--sans);background:var(--bg);word-break:keep-all;overflow-wrap:anywhere}
 a{color:inherit}
 button,input,select,textarea{font:inherit;color:inherit}
 [hidden]{display:none!important}
@@ -49,11 +49,13 @@ textarea{resize:vertical;min-height:110px}
 .me{background:var(--paper);border:2px solid var(--edge);border-radius:999px;padding:5px 13px;font-size:14px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .me.on{background:var(--sun)}
 
-/* 히어로: 한낮의 맵 위를 도는 슬라임 */
+/* 히어로: 장난감처럼 떠다니는 도형 (누르면 톡) */
 .hero{display:grid;grid-template-columns:1fr 118px;gap:16px;align-items:center;padding:22px 16px 20px}
 .hero-txt{grid-column:1;grid-row:1}
-.field{grid-column:2;grid-row:1;width:118px;height:118px;border-radius:18px;display:block;background:var(--grass);border:2px solid var(--edge);box-shadow:var(--pop)}
-.hero h1{font-size:27px;line-height:1.25;white-space:pre-line}
+.field-wrap{grid-column:2;grid-row:1}
+.field{width:118px;height:118px;border-radius:18px;display:block;background:#fff;border:2px solid var(--edge);box-shadow:var(--pop);touch-action:manipulation;cursor:pointer}
+.field-hint{display:none}
+.hero h1{font-size:26px;line-height:1.22;white-space:pre-line}
 .hero p{margin:8px 0 0;color:var(--ink-2);font-size:13.5px;line-height:1.55}
 body:not([data-view="games"]) .hero{display:none}
 
@@ -82,6 +84,12 @@ body:not([data-view="games"]) .hero{display:none}
 .map{display:grid;grid-template-columns:76px 1fr;grid-template-areas:"thumb info" "thumb top" "act act";column-gap:14px;row-gap:4px;padding:14px;background:var(--paper);border:2px solid var(--edge);border-radius:20px;box-shadow:var(--pop);transition:transform .1s,box-shadow .1s}
 .map-thumb{grid-area:thumb;width:76px;height:76px;border-radius:14px;display:block;border:2px solid var(--edge)}
 .map-info{grid-area:info;min-width:0}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.tag{display:inline-block;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--ink-2);font-size:12px;font-weight:600}
+.tag.o{background:#e6edff;color:#2f5fe0}
+.genres{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 14px;padding:2px 16px 6px;scrollbar-width:none}
+.genres button{flex:none;background:var(--paper);border:2px solid var(--edge);border-radius:999px;padding:6px 14px;cursor:pointer;white-space:nowrap;font-size:14px;font-weight:600}
+.genres button[aria-pressed="true"]{background:var(--ink);color:#fff}
 .map-name{font-family:var(--display);font-size:22px;line-height:1.2}
 .map-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:4px;font-size:13px;color:var(--ink-2)}
 .star{color:#f5a400;letter-spacing:1px}
@@ -177,8 +185,9 @@ dialog h2{font-size:26px}
   .bar{position:static;flex-wrap:wrap;row-gap:10px;border-bottom:0;background:transparent;backdrop-filter:none;padding:22px 28px 6px}
   .hero,body:not([data-view="games"]) .hero{display:block;padding:16px 28px 22px}
   .field{width:100%;height:auto;aspect-ratio:1;max-width:324px;border-radius:26px;box-shadow:5px 5px 0 var(--edge)}
+  .field-hint{display:block;margin-top:10px;font-size:12.5px;color:var(--ink-3)}
   .hero-txt{margin-top:24px}
-  .hero h1{font-size:36px;line-height:1.18}
+  .hero h1{font-size:34px;line-height:1.18}
   .hero p{font-size:14.5px;margin-top:12px}
   .nav{display:flex;flex-direction:column;gap:4px;padding:8px 20px}
   .nav a{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border:2px solid transparent;border-radius:14px;text-decoration:none;color:var(--ink-2);font-size:16px;font-weight:600}
@@ -205,7 +214,7 @@ dialog h2{font-size:26px}
   .notice{margin:0 0 20px}
   .latest{max-width:680px;margin-top:40px}
 
-  .pick{margin:0 0 20px;padding:2px 0 6px;flex-wrap:wrap}
+  .pick,.genres{margin:0 0 20px;padding:2px 0 6px;flex-wrap:wrap}
   .seg{display:none}
   .boards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   .boards .board{display:block}

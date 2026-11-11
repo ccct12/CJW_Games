@@ -1,7 +1,7 @@
 {
   "name": "CJW GAMES",
   "short_name": "CJW GAMES",
-  "description": "워크래프트3 유즈맵 모바일 게임 모음",
+  "description": "폰에서 바로 하는 웹 게임 모음",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
