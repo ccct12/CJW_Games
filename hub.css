@@ -163,7 +163,8 @@ dialog h2{font-size:20px}
 @media (min-width:960px){
   body{font-size:15.5px}
   .app{display:grid;grid-template-columns:minmax(320px,380px) 1fr;max-width:1320px;margin:0 auto}
-  .side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;border-right:1px solid var(--line);overflow-y:auto}
+  .side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;border-right:1px solid var(--line);overflow-y:auto;overflow-x:hidden}
+  .bar{flex-wrap:wrap;row-gap:10px}
   .bar{position:static;border-bottom:0;padding:22px 28px 6px}
   .hero,body:not([data-view="games"]) .hero{display:block;padding:18px 28px 26px;border-bottom:0}
   .field{width:100%;height:auto;aspect-ratio:1;max-width:324px}
@@ -220,8 +221,9 @@ dialog h2{font-size:20px}
 }
 @media (min-width:960px) and (max-width:1099px){
   .main{padding:32px 28px 56px}
-  .app{grid-template-columns:300px 1fr}
-  .bar,.hero,.hero.body,.side-foot{padding-left:22px;padding-right:22px}
+  .app{grid-template-columns:320px 1fr}
+  .bar,.hero,.side-foot{padding-left:18px;padding-right:18px}
+  .nav{padding-left:8px;padding-right:8px}
   .rv-layout{grid-template-columns:minmax(0,1fr) 280px;gap:28px}
   .boards{gap:24px}
 }
