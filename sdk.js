@@ -2,7 +2,7 @@
  * CJW 게임 허브 SDK v1 — 허브와 모든 게임이 같이 쓰는 작은 연결 코드
  *
  * 게임에서 쓰는 법 (index.html 맨 아래):
- *   <script src="https://ccct12.github.io/CJW-Games/sdk.js"></script>
+ *   <script src="https://ccct12.github.io/CJW_Games/sdk.js"></script>
  *   <script>
  *     CJWHub.visit("nrd");                          // 게임 열 때 1번 (방문 기록)
  *     // 판이 끝나면:
@@ -15,7 +15,7 @@
 (function (root) {
   "use strict";
   var API = "https://script.google.com/macros/s/AKfycbz1u8Fc1BiieqSkNWNLq4OkS9_b47lA0XDzkUucsOYQp525xx5Byj175zn77FSb-GWp6w/exec";
-  var HUB_URL = "https://ccct12.github.io/CJW-Games/";
+  var HUB_URL = "https://ccct12.github.io/CJW_Games/";
   var K = { vid: "cjw.vid", nick: "cjw.nick", token: "cjw.token", exp: "cjw.exp", lang: "cjw.lang" };
 
   function ls(k, v) {
