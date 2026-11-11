@@ -130,6 +130,7 @@ body:not([data-view="games"]) .hero{display:none}
 .rank li.mine{background:#fff3c4;margin:0 -14px;padding-left:14px;padding-right:14px}
 .rank li.mine .nm::after{content:attr(data-you);margin-left:8px;padding:1px 7px;border-radius:999px;background:var(--pink);color:var(--ink);font-size:11.5px}
 .empty{padding:22px 2px;color:var(--ink-3)}
+.rank li.empty{display:block;padding:22px 2px;text-align:center}
 
 /* ── 후기 ── */
 .rv-layout{display:flex;flex-direction:column}

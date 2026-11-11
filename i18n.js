@@ -191,3 +191,9 @@ window.CJW_T = (function () {
   };
   Object.keys(X).forEach(function (l) { Object.keys(X[l]).forEach(function (k) { T[l][k] = X[l][k]; }); });
 })(window.CJW_T);
+
+/* "사이트 전체" → "사이트에 대해" (모든 후기와 헷갈리지 않게, 2026-11-11) */
+(function (T) {
+  var X = { ko: "사이트에 대해", en: "About the site", ja: "サイトについて", "zh-Hans": "关于网站", "zh-Hant": "關於網站" };
+  Object.keys(X).forEach(function (l) { T[l].siteAll = X[l]; });
+})(window.CJW_T);
