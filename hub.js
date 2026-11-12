@@ -5,6 +5,7 @@
   var LOCALE = { ko: "ko-KR", en: "en-US", ja: "ja-JP", "zh-Hans": "zh-CN", "zh-Hant": "zh-TW" };
   var FLAG = { ko: "KO", en: "EN", ja: "JA", "zh-Hans": "简", "zh-Hant": "繁" };
   var lang = T[H.lang()] ? H.lang() : "ko";
+  var THUMB_V = "2";   // 썸네일 이미지를 같은 이름으로 바꿨으면 이 숫자를 올리기 (캐시 무시)
   var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function t(k, vars) {
@@ -279,7 +280,7 @@
       var rt = rating[g.id], top = tops[g.id] && tops[g.id].week && tops[g.id].week[0];
       var url = /^https:\/\//.test(g.url) ? g.url : "#";
       var thumb;
-      if (g.thumb && /^https:\/\//.test(g.thumb)) thumb = el("img", { cls: "map-thumb", src: g.thumb, alt: "", loading: "lazy" });
+      if (g.thumb && /^https:\/\//.test(g.thumb)) thumb = el("img", { cls: "map-thumb", src: g.thumb + (g.thumb.indexOf("?") < 0 ? "?v=" + THUMB_V : ""), alt: "", loading: "lazy" });
       else thumb = coverThumb(g, games.indexOf(g));
       box.appendChild(el("li", { cls: "map" }, [
         thumb,

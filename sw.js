@@ -1,6 +1,6 @@
 /* CJW GAMES 허브 서비스 워커 — 허브 화면 파일만 저장 (API·게임 파일은 저장 안 함) */
-var V = "hub-v13";
-var SHELL = ["./", "index.html", "hub.css?v=13", "hub.js?v=13", "i18n.js?v=13", "sdk.js?v=13", "icon.svg", "manifest.webmanifest"];
+var V = "hub-v14";
+var SHELL = ["./", "index.html", "hub.css?v=14", "hub.js?v=14", "i18n.js?v=14", "sdk.js?v=14", "icon.svg", "manifest.webmanifest"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(V).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
 });
