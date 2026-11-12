@@ -48,6 +48,9 @@ textarea{resize:vertical;min-height:110px}
 .lang select{border-color:var(--soft-2);font-size:14px;padding:6px 8px;background:var(--paper)}
 .me{background:var(--paper);border:2px solid var(--edge);border-radius:999px;padding:5px 13px;font-size:14px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .me.on{background:var(--sun)}
+.insta-ic{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:2px solid var(--edge);border-radius:50%;background:var(--paper);color:#e1306c}
+.insta-ic svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2}
+.insta-ic:hover{background:#ffe3ee}
 
 /* 히어로: 장난감처럼 떠다니는 도형 (누르면 톡) */
 .hero{display:grid;grid-template-columns:1fr 118px;gap:16px;align-items:center;padding:22px 16px 20px}
@@ -62,6 +65,10 @@ body:not([data-view="games"]) .hero{display:none}
 .nav,.side-foot{display:none}
 .main{padding:8px 16px calc(var(--dock-h) + var(--safe-b) + 28px)}
 .main-foot{color:var(--ink-3);font-size:12px;margin:36px 0 0}
+.main-foot p,.side-foot p{margin:10px 0 0}
+.insta{display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 10px;border:2px solid var(--edge);border-radius:999px;background:var(--paper);color:var(--ink);text-decoration:none;font-size:14px;font-weight:600;box-shadow:var(--pop)}
+.insta svg{width:20px;height:20px;fill:none;stroke:#e1306c;stroke-width:2}
+.insta:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--edge)}
 .vh{font-size:28px;margin:10px 0 14px}
 
 /* 모바일 하단 탭 */
@@ -250,3 +257,4 @@ dialog h2{font-size:26px}
   .btn,.map,.starpick button{transition:none}
   .btn:hover,.btn:active,.map:hover{transform:none}
 }
+@media (max-width:379px){ .brand span{display:none} .lang select{max-width:96px} }
