@@ -82,7 +82,7 @@ body:not([data-view="games"]) .hero{display:none}
 .cont-n{font-family:var(--display);font-size:20px}
 .maps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
 .map{display:grid;grid-template-columns:76px 1fr;grid-template-areas:"thumb info" "thumb top" "act act";column-gap:14px;row-gap:4px;padding:14px;background:var(--paper);border:2px solid var(--edge);border-radius:20px;box-shadow:var(--pop);transition:transform .1s,box-shadow .1s}
-.map-thumb{grid-area:thumb;width:76px;height:76px;border-radius:14px;display:block;border:2px solid var(--edge)}
+.map-thumb{grid-area:thumb;width:76px;height:76px;border-radius:14px;display:block;border:2px solid var(--edge);object-fit:cover;background:var(--soft)}
 .map-info{grid-area:info;min-width:0}
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
 .tag{display:inline-block;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--ink-2);font-size:12px;font-weight:600}
